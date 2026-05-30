@@ -3,21 +3,82 @@
 <head>
 <title>Emoji Favicon Generator</title>
 <meta name="description" content="Turn any emoji into a 1024×1024 PNG favicon — free, browser-only, no install.">
-<style>
-  body { font-family: sans-serif; padding: 20px; }
-  #preview { width: 256px; height: 256px; border: 1px solid #ccc; display: block; }
-  #emoji-input { font-size: 48px; width: 80px; text-align: center; padding: 4px; }
-  label { display: block; margin-bottom: 8px; font-size: 14px; color: #555; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem;
+    background: var(--bg, #fff);
+    border: 1px solid var(--border, #ccc);
+    border-radius: 8px;
+    max-width: 560px;
+    width: 100%;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  label {
+    font-size: 0.875rem;
+    color: var(--text-muted, #555);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  #emoji-input {
+    font-size: 3rem;
+    width: 4rem;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid var(--border, #ccc);
+    border-radius: 6px;
+  }
+
+  #preview {
+    width: 256px;
+    height: 256px;
+    border: 1px solid var(--border, #ccc);
+    border-radius: 6px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  canvas { display: none; }
+
+  @media (max-width: 480px) {
+    main {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+  }
+</style>
 </head>
 <body>
-<label>Type or paste an emoji (or use your OS picker: Mac = Ctrl+Cmd+Space)</label>
-<input id="emoji-input" type="text" value="🌅" autocomplete="off" spellcheck="false">
-<br><br>
+<main>
+  <div class="controls">
+    <label for="emoji-input">Type or paste an emoji<br>(Mac picker: Ctrl+Cmd+Space)</label>
+    <input id="emoji-input" type="text" value="🌅" autocomplete="off" spellcheck="false">
+    <button onclick="download()">Download favicon.png</button>
+  </div>
+  <img id="preview" alt="preview">
+</main>
 <canvas id="c" width="1024" height="1024"></canvas>
-<img id="preview" alt="preview">
-<br><button onclick="download()">Download favicon.png</button>
 <script>
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
