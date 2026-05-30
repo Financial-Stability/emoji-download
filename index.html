@@ -105,7 +105,7 @@
     ctx.font = '820px serif';
     ctx.textBaseline = 'alphabetic';
     const m = ctx.measureText(emoji);
-    const x = (canvas.width - (m.actualBoundingBoxLeft + m.actualBoundingBoxRight)) / 2 - m.actualBoundingBoxLeft;
+    const x = (canvas.width - m.actualBoundingBoxRight + m.actualBoundingBoxLeft) / 2;
     const y = (canvas.height + m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
     ctx.fillText(emoji, x, y);
     preview.src = canvas.toDataURL('image/png');
