@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<style>
+  body { font-family: sans-serif; padding: 20px; }
+  #preview { width: 256px; height: 256px; border: 1px solid #ccc; display: block; }
+  #emoji-input { font-size: 48px; width: 80px; text-align: center; padding: 4px; }
+  label { display: block; margin-bottom: 8px; font-size: 14px; color: #555; }
+</style>
+</head>
+<body>
+<label>Type or paste an emoji (or use your OS picker: Mac = Ctrl+Cmd+Space)</label>
+<input id="emoji-input" type="text" value="🌅" autocomplete="off" spellcheck="false">
+<br><br>
+<canvas id="c" width="1024" height="1024"></canvas>
+<img id="preview" alt="preview">
+<br><button onclick="download()">Download favicon.png</button>
+<script>
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const input = document.getElementById('emoji-input');
+  const preview = document.getElementById('preview');
+  const segmenter = new Intl.Segmenter();
+
+  function firstEmoji(text) {
+    for (const { segment } of segmenter.segment(text)) {
+      if (segment.trim()) return segment;
+    }
+    return null;
+  }
+
+  function draw(emoji) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '820px serif';
+    ctx.textBaseline = 'alphabetic';
+    const m = ctx.measureText(emoji);
+    const x = (canvas.width - (m.actualBoundingBoxLeft + m.actualBoundingBoxRight)) / 2 - m.actualBoundingBoxLeft;
+    const y = (canvas.height + m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+    ctx.fillText(emoji, x, y);
+    preview.src = canvas.toDataURL('image/png');
+  }
+
+  input.addEventListener('input', () => {
+    const emoji = firstEmoji(input.value);
+    if (emoji) draw(emoji);
+  });
+
+  draw('🌅');
+
+  function download() {
+    const emoji = firstEmoji(input.value) ?? '🌅';
+    const a = document.createElement('a');
+    a.download = `favicon-${emoji}.png`;
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  }
+</script>
+</body>
+</html>
